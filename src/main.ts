@@ -90,3 +90,19 @@ const getActresses = async (arr: number[]): Promise<(Actress | null)[]> => {
     return [];
   }
 }
+
+const generateId = (): number => Math.floor(Math.random() * 99999);
+
+const createActress = (data: Omit<Actress, 'id'>): Actress => {
+  return {
+    id: generateId(),
+    ...data
+  }
+}
+
+const updateActress = (actress: Actress, updates: Partial<Omit<Actress, 'id' | 'name'>>): Actress => {
+  return {
+    ...actress,
+    ...updates
+  }
+}
