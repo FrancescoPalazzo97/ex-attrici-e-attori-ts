@@ -211,3 +211,15 @@ const updateActor = (actor: Actor, updates: Partial<Omit<Actor, 'id' | 'name'>>)
     ...updates
   }
 }
+
+const randomElement = <T>(arr: T[]): T => {
+  if (arr.length === 0) throw new Error('Array vuoto: impossibile selezionare un elemento casuale');
+  const randomIndex = Math.floor(Math.random() * arr.length);
+  return arr[randomIndex];
+}
+
+const createRandomCouple = async (): Promise<[Actress, Actor]> => {
+  const allActors = await getAllActors();
+  const allActresses = await getAllActress();
+  return [randomElement(allActresses), randomElement(allActors)];
+}
