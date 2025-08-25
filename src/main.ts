@@ -46,6 +46,7 @@ const isValid = (data: unknown): data is Actress => {
 const getActress = async (id: number): Promise<Actress | null> => {
   try {
     const res = await fetch(`${API_URL}/actresses/${id}`);
+    if (!res.ok) throw new Error(`Errore ${res.status}: ${res.statusText}`);
     const data: unknown = await res.json();
     if (!isValid(data)) throw new Error('Formato non valido');
     return data;
@@ -55,6 +56,37 @@ const getActress = async (id: number): Promise<Actress | null> => {
     } else {
       console.error('Errore sconosciuto:', e);
     }
+    return null
   }
-  return null
 };
+
+const getAllActress = async (): Promise<Actress[]> => {
+  try {
+    const res = await fetch(`${API_URL}/actresses`);
+    if (!res.ok) throw new Error(`Errore ${res.status}: ${res.statusText}`);
+    const data: unknown = res.json();
+    if (!Array.isArray(data)) throw new Error(`Formato non valido`);
+    const validActress = data.filter(d => isValid(d));
+    return validActress;
+  } catch (e) {
+    if (e instanceof Error) {
+      console.error(`Errore nel recupero dei dati delle attrici:`, e);
+    } else {
+      console.error('Errore sconosciuto:', e);
+    }
+    return [];
+  }
+}
+
+const getActresses = async (arr: number[]): Promise<(Actress | null)[]> => {
+  try {
+    return await Promise.all(arr.map(id => getActress(id)));
+  } catch (e) {
+    if (e instanceof Error) {
+      console.error(`Errore nel recupero dei dati delle attrici:`, e);
+    } else {
+      console.error('Errore sconosciuto:', e);
+    }
+    return [];
+  }
+}
